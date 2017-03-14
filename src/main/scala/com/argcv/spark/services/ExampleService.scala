@@ -10,9 +10,12 @@ import com.argcv.spark.utils.SparkHelper._
 object ExampleService extends Awakable {
   import ss.implicits._
 
-  val projCWD = ""
+  /**
+    * /Users/username/path/to/current/project
+    */
+  val projCWD = new java.io.File(".").getAbsolutePath.dropRight(1)
 
-  def loadData(path:String = s"file://${new java.io.File(".").getAbsolutePath.dropRight(1)}/data/case.csv"): Unit = {
+  def loadData(path:String = s"file://$projCWD/data/case.csv"): Unit = {
     val patientEvents = ss.sqlContext.read.format("com.databricks.spark.csv").load(path).
       toDF("patientId", "eventId", "date", "rawvalue").
       withColumn("value", 'rawvalue.cast("Double"))
